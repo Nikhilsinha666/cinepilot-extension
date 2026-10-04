@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CinePilot - Site lists</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="hdr">
+      <span class="logo" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+          <rect x="2.5" y="4.5" width="19" height="15" rx="3.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M10 9.2l4.6 2.8L10 14.8V9.2z" fill="currentColor"/>
+        </svg>
+      </span>
+      <div>
+        <h1>Site lists</h1>
+        <p class="sub">One domain per line. Subdomains are covered automatically, so
+          <code>reddit.com</code> also blocks <code>old.reddit.com</code>.</p>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Allowlist</h2>
+      <p class="desc">Stays reachable while <strong>Hyper Focus</strong> is on. Put the
+        things you genuinely need next to a video here, like your notes or docs.</p>
+      <textarea id="allow" spellcheck="false" rows="9"
+        placeholder="notion.so&#10;docs.google.com&#10;github.com"></textarea>
+      <p class="count" id="allowCount"></p>
+    </section>
+
+    <section class="card">
+      <h2>Blocklist</h2>
+      <p class="desc">Blocked <strong>at all times</strong>, whether Hyper Focus is on or
+        not. This is for the sites you never want to end up on by reflex.</p>
+      <textarea id="block" spellcheck="false" rows="9"
+        placeholder="reddit.com&#10;x.com&#10;instagram.com"></textarea>
+      <p class="count" id="blockCount"></p>
+    </section>
+
+    <div class="bar">
+      <button id="save" class="btn primary">Save lists</button>
+      <span id="status" class="status"></span>
+    </div>
+
+    <p class="foot">
+      <code>chrome://</code> pages are never blocked, so you can always reach your
+      settings and turn any of this off.
+    </p>
+  </main>
+  <script src="options.js"></script>
+</body>
+</html>

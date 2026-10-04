@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CinePilot — Live Camera</title>
+  <link rel="stylesheet" href="preview.css" />
+</head>
+<body>
+  <main class="wrap">
+    <h1>CinePilot — Live Camera</h1>
+    <p class="sub">This is exactly what the detector sees. Everything stays on your device.</p>
+
+    <div class="stage">
+      <video id="cam" autoplay playsinline muted></video>
+      <canvas id="overlay"></canvas>
+      <div id="bigState" class="big-state">Starting…</div>
+      <div id="vidState" class="vid-state"></div>
+      <div id="watchPill" class="watch-pill">
+        <span id="watchTxt"></span>
+        <span class="watch-bar"><i id="watchFill"></i></span>
+      </div>
+    </div>
+
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeHead" data-mode="head">Head pose</button>
+      <button class="mode-btn" id="modeEyes" data-mode="eyes">Eye gaze</button>
+    </div>
+
+    <div class="readouts">
+      <div class="ro"><span class="ro-label">Face</span><span id="roFace" class="ro-val">—</span></div>
+      <div class="ro"><span class="ro-label">Turn (L/R)</span><span id="roYaw" class="ro-val">0°</span></div>
+      <div class="ro"><span class="ro-label">Tilt (U/D)</span><span id="roPitch" class="ro-val">0°</span></div>
+      <div class="ro"><span class="ro-label">Decision</span><span id="roDecision" class="ro-val">—</span></div>
+    </div>
+
+    <div class="bars">
+      <div class="bar-row"><span>Turn</span><div class="bar"><b id="yawZone"></b><i id="yawBar"></i></div></div>
+      <div class="bar-row"><span>Tilt</span><div class="bar"><b id="pitchZone"></b><i id="pitchBar"></i></div></div>
+      <div class="bar-row eyes-only"><span>Eyes ←→</span><div class="bar"><b id="ehZone"></b><i id="ehBar"></i></div></div>
+      <div class="bar-row eyes-only"><span>Eyes ↑↓</span><div class="bar"><b id="evZone"></b><i id="evBar"></i></div></div>
+    </div>
+
+    <div class="controls">
+      <label class="sens">
+        Sensitivity
+        <input type="range" id="sensitivity" min="1" max="5" step="1" value="3" />
+        <span id="sensVal">3</span>
+      </label>
+      <button id="calibrateBtn" class="btn primary">Calibrate (look straight, then click)</button>
+    </div>
+
+    <p id="msg" class="msg"></p>
+    <p class="hint">Turn your head, look away, or cover your face — the banner switches to PAUSED and the YouTube video pauses with it.</p>
+  </main>
+  <script type="module" src="preview.js"></script>
+</body>
+</html>

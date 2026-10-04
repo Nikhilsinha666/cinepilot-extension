@@ -1,0 +1,203 @@
+* { box-sizing: border-box; }
+
+:root {
+  --bg: #0f1014;
+  --card: #1a1c22;
+  --card2: #20232b;
+  --txt: #e8eaed;
+  --muted: #9aa0a6;
+  --dim: #767b83;
+  --accent: #ff2d46;
+  --accent-soft: #ff5566;
+  --green: #45c463;
+  --amber: #ffb300;
+  --border: #2a2d36;
+}
+
+html, body {
+  margin: 0;
+  width: 340px;
+  font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--txt);
+}
+
+/* ------------------------------------------------------------------ header -- */
+.hdr {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 10px;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo { color: var(--accent); display: flex; }
+.title {
+  font-size: 16px; font-weight: 700; line-height: 1;
+  display: flex; flex-direction: column; gap: 3px; letter-spacing: .2px;
+}
+.title small { font-size: 10px; font-weight: 400; color: var(--muted); letter-spacing: .3px; }
+
+/* -------------------------------------------------------------------- cards -- */
+.card {
+  background: var(--card);
+  margin: 8px 12px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.card-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px;
+}
+.card-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13.5px; font-weight: 600;
+}
+.card-title .ico { color: var(--accent); display: flex; }
+
+/* collapsed / disabled sub-settings */
+.sub {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.sub.off { opacity: .38; pointer-events: none; }
+.card.off .card-title { color: var(--dim); }
+.card.off .card-title .ico { color: var(--dim); }
+
+/* ------------------------------------------------------------------ status -- */
+.card.status { padding-bottom: 12px; }
+.status-row { display: flex; align-items: center; gap: 10px; }
+.state-dot {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--muted); flex: none; transition: background .2s, box-shadow .2s;
+}
+.state-dot.on    { background: var(--green); box-shadow: 0 0 0 4px rgba(69,196,99,.15); }
+.state-dot.away  { background: var(--accent); box-shadow: 0 0 0 4px rgba(255,45,70,.16); }
+.state-dot.idle  { background: var(--amber); box-shadow: 0 0 0 4px rgba(255,179,0,.14); }
+.state-dot.off   { background: var(--muted); }
+.state-text { font-size: 14px; font-weight: 500; }
+.source { margin: 7px 0 0 21px; font-size: 11px; color: var(--dim); line-height: 1.4; }
+
+.metrics { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.metrics.hidden { display: none; }
+.metric { display: grid; grid-template-columns: 70px 1fr; align-items: center; gap: 8px; }
+.m-label { font-size: 11px; color: var(--muted); }
+.bar { position: relative; height: 6px; background: var(--card2); border-radius: 3px; overflow: hidden; }
+.bar i {
+  position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+  background: var(--green); transform: translateX(-50%);
+  transition: left .12s linear, background .2s;
+}
+
+/* ------------------------------------------------------------------ banner -- */
+.banner {
+  margin: 8px 12px; padding: 12px 14px;
+  background: rgba(255,45,70,.12);
+  border: 1px solid rgba(255,45,70,.4);
+  border-radius: 12px;
+}
+.banner p { margin: 0 0 10px; font-size: 12.5px; line-height: 1.45; color: #ffd5d9; }
+.hidden { display: none; }
+
+/* ---------------------------------------------------------------- settings -- */
+.setting { display: flex; flex-direction: column; gap: 6px; }
+.setting + .setting { margin-top: 13px; }
+.setting.inline { flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; }
+.setting label { font-size: 12.5px; font-weight: 500; }
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.val { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.range-legend { display: flex; justify-content: space-between; font-size: 10px; color: var(--dim); }
+.hint { margin: 5px 0 0; font-size: 11px; color: var(--muted); line-height: 1.45; }
+
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 2px 0 0; }
+
+/* ----------------------------------------------------------------- buttons -- */
+.actions { margin-top: 13px; display: flex; flex-direction: column; gap: 7px; }
+.btn {
+  width: 100%; padding: 9px 12px; border-radius: 9px;
+  border: 1px solid var(--border); background: var(--card2);
+  color: var(--txt); font-size: 12.5px; font-weight: 500; cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.btn:hover { background: #2a2e38; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--accent-soft); }
+.btn.ghost { background: transparent; color: var(--muted); }
+.btn.ghost:hover { background: var(--card2); color: var(--txt); }
+
+/* ------------------------------------------------------------ mode toggle --- */
+.mode-toggle { display: flex; gap: 6px; }
+.mode-opt {
+  flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--card2); color: var(--muted);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.mode-opt.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ------------------------------------------------------------------ footer -- */
+.foot {
+  padding: 10px 16px 14px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+#footHint { font-size: 11px; color: var(--muted); }
+.foot a { font-size: 11px; color: var(--dim); text-decoration: none; white-space: nowrap; }
+.foot a:hover { color: var(--txt); text-decoration: underline; }
+
+/* ------------------------------------------------------------------ switch -- */
+.switch { position: relative; display: inline-block; width: 42px; height: 24px; flex: none; }
+.switch.sm { width: 36px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; inset: 0; cursor: pointer;
+  background: #3a3d46; border-radius: 999px; transition: .2s;
+}
+.slider::before {
+  content: ""; position: absolute; height: 18px; width: 18px; left: 3px; top: 3px;
+  background: #fff; border-radius: 50%; transition: .2s;
+}
+.switch.sm .slider::before { height: 14px; width: 14px; }
+input:checked + .slider { background: var(--accent); }
+input:checked + .slider::before { transform: translateX(18px); }
+.switch.sm input:checked + .slider::before { transform: translateX(16px); }
+input:focus-visible + .slider { outline: 2px solid var(--accent-soft); outline-offset: 2px; }
+
+/* ------------------------------------------------------------- confirm ----- */
+/* Raising a commitment is hard to undo later, so it gets an explicit yes.
+   An in-popup card rather than window.confirm, which looks foreign and can
+   dismiss the popup out from under us. */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(6, 7, 10, .72);
+  backdrop-filter: blur(2px);
+}
+.modal.hidden { display: none; }
+
+.modal-card {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 16px 14px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .5);
+}
+.modal-card h3 {
+  margin: 0 0 7px;
+  font-size: 14.5px;
+  font-weight: 700;
+}
+.modal-card p {
+  margin: 0 0 14px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.modal-actions { display: flex; gap: 8px; }
+.modal-actions .btn { width: auto; flex: 1; }

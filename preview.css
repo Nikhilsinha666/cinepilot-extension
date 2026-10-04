@@ -1,0 +1,180 @@
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; min-height: 100%; display: flex; justify-content: center;
+  background: radial-gradient(1000px 500px at 50% -10%, #1d2230, #0d0f14);
+  color: #e8eaed; font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+}
+.wrap { width: min(560px, 94vw); padding: 24px 20px 36px; text-align: center; }
+h1 { margin: 0 0 4px; font-size: 22px; }
+.sub { margin: 0 0 18px; font-size: 13px; color: #9aa0a6; }
+
+.stage {
+  position: relative; width: 100%; aspect-ratio: 4 / 3;
+  background: #000; border-radius: 14px; overflow: hidden;
+  border: 1px solid #2a2e38;
+}
+#cam, #overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  transform: scaleX(-1); /* mirror like a selfie */
+}
+#cam { object-fit: cover; background: #000; }
+#overlay { pointer-events: none; }
+
+.big-state {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  padding: 7px 16px; border-radius: 999px; font-weight: 700; font-size: 14px;
+  letter-spacing: .3px; background: rgba(20,20,22,.85); color: #fff;
+  display: flex; align-items: center; gap: 8px; white-space: nowrap;
+}
+.big-state.watching { background: rgba(34,120,54,.92); }
+.big-state.paused { background: rgba(214,41,41,.92); }
+.big-state.noface { background: rgba(214,120,20,.92); }
+
+/* what the page's <video> is actually doing, pushed in by the content script */
+.vid-state {
+  position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+  padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  letter-spacing: .3px; text-transform: uppercase;
+  background: rgba(20,20,22,.8); color: #cfd3d8; white-space: nowrap;
+  display: none;
+}
+.vid-state.show { display: block; }
+.vid-state.paused { color: #ffb3b3; }
+
+/* Watch progress, mirrored from the page. Deliberately survives every shrink
+   breakpoint: at passport size this tile is often the only visible surface, so
+   the commitment figure has to stay readable here. */
+.watch-pill {
+  position: absolute; top: 8px; left: 8px; right: 8px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 5px 9px 6px;
+  border-radius: 9px;
+  background: rgba(12, 13, 17, .82);
+  border: 1px solid rgba(255, 255, 255, .1);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: #e8eaed;
+  white-space: nowrap;
+}
+.watch-pill.show { display: flex; }
+.watch-pill.locked { border-color: rgba(255, 45, 70, .5); color: #ff9aa6; }
+.watch-pill.done { border-color: rgba(69, 196, 99, .5); color: #7fe09a; }
+
+.watch-bar {
+  display: block;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, .14);
+  overflow: hidden;
+}
+.watch-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: #ff2d46;
+  transition: width .4s ease;
+}
+.watch-pill.done .watch-bar i { background: #45c463; }
+
+.mode-row { display: flex; gap: 8px; margin: 14px 0 0; }
+.mode-btn {
+  flex: 1; padding: 8px; border-radius: 9px; border: 1px solid #2a2e38;
+  background: #1a1c22; color: #cfd3d8; font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.mode-btn.active { background: #ff4d4d; border-color: #ff4d4d; color: #fff; }
+
+.readouts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 14px 0 6px; }
+.ro { background: #1a1c22; border: 1px solid #262a33; border-radius: 10px; padding: 8px 6px; }
+.ro-label { display: block; font-size: 10px; color: #9aa0a6; margin-bottom: 4px; }
+.ro-val { font-size: 16px; font-weight: 600; }
+
+.bars { margin: 10px 0 4px; display: flex; flex-direction: column; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: 56px 1fr; align-items: center; gap: 10px; }
+.bar-row > span { font-size: 11px; color: #9aa0a6; text-align: left; }
+.bar { position: relative; height: 12px; background: #20232b; border-radius: 6px; overflow: hidden; }
+.bar i { position: absolute; top: 0; bottom: 0; width: 3px; background: #45c463; left: 50%; transform: translateX(-50%); transition: left .1s linear, background .15s; z-index: 2; }
+.bar b { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); background: rgba(69,196,99,.18); border-radius: 6px; }
+
+/* eye bars only shown in eye mode */
+.bar-row.eyes-only { display: none; }
+body.mode-eyes .bar-row.eyes-only { display: grid; }
+
+.controls { margin: 16px 0 4px; display: flex; flex-direction: column; gap: 14px; align-items: center; }
+.sens { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #cfd3d8; }
+.sens input[type=range] { width: 200px; accent-color: #ff4d4d; }
+.btn { padding: 11px 18px; border-radius: 10px; border: 1px solid #2a2e38; background: #20232b; color: #e8eaed; font-size: 14px; font-weight: 600; cursor: pointer; }
+.btn.primary { background: #ff4d4d; border-color: #ff4d4d; color: #fff; }
+.btn.primary:hover { background: #ff6262; }
+
+.msg { margin: 14px 0 4px; font-size: 13px; min-height: 18px; }
+.msg.ok { color: #45c463; }
+.msg.err { color: #ff7a7a; }
+.hint { font-size: 11px; color: #777d85; }
+
+/* ---------- Embedded (PiP inside YouTube) compact layout ---------- */
+body.embed { background: #0d0f14; align-items: stretch; overflow: hidden; }
+body.embed .wrap {
+  width: 100%; height: 100%; padding: 4px 5px 5px;
+  display: flex; flex-direction: column;
+}
+body.embed h1, body.embed .sub, body.embed .hint { display: none; }
+/* The camera takes whatever room the tile has; the extras keep their own size. */
+body.embed .stage { border-radius: 6px; aspect-ratio: auto; flex: 1 1 auto; min-height: 60px; }
+body.embed .mode-row,
+body.embed .readouts,
+body.embed .bars,
+body.embed .controls,
+body.embed .msg { flex: none; }
+body.embed .big-state { font-size: 11px; padding: 4px 10px; top: 6px; }
+body.embed .vid-state { font-size: 9px; padding: 3px 9px; bottom: 6px; }
+body.embed .watch-pill { top: 6px; left: 6px; right: 6px; font-size: 10px; padding: 4px 7px 5px; }
+body.embed .mode-row { margin: 8px 0 0; gap: 6px; }
+body.embed .mode-btn { padding: 6px; font-size: 11px; }
+body.embed .readouts { gap: 4px; margin: 8px 0 4px; }
+body.embed .ro { padding: 4px 2px; }
+body.embed .ro-label { font-size: 8px; }
+body.embed .ro-val { font-size: 12px; }
+body.embed .bars { gap: 6px; margin: 6px 0 2px; }
+body.embed .bar-row { grid-template-columns: 44px 1fr; }
+body.embed .bar { height: 8px; }
+body.embed .controls { margin: 8px 0 2px; gap: 8px; }
+body.embed .sens { font-size: 11px; }
+body.embed .sens input[type=range] { width: 110px; }
+body.embed .btn { padding: 7px 10px; font-size: 11px; }
+body.embed .msg { font-size: 10px; margin: 6px 0 0; }
+
+/* ---------- Progressive disclosure as the tile is resized ----------
+   These media queries measure the iframe's own width, so they respond to the
+   PiP being dragged smaller. Diagnostics drop away first and the camera is the
+   last thing standing; at passport size only the camera and a colour-coded
+   state dot remain. Errors are never hidden. */
+@media (max-width: 430px) {
+  body.embed .bars { display: none; }
+}
+@media (max-width: 330px) {
+  body.embed .readouts { display: none; }
+  body.embed .vid-state { display: none; }
+}
+@media (max-width: 250px) {
+  body.embed .mode-row,
+  body.embed .controls { display: none; }
+  body.embed .msg:not(.err) { display: none; }
+  body.embed .msg.err { font-size: 9px; line-height: 1.25; margin: 3px 0 0; }
+  body.embed .wrap { padding: 3px; }
+  body.embed .stage { border-radius: 4px; }
+  /* progress stays, it just gets tighter */
+  body.embed .watch-pill { font-size: 9px; padding: 3px 6px 4px; gap: 3px; }
+  body.embed .watch-bar { height: 2px; }
+  /* the state pill collapses into a dot, and moves clear of the progress pill */
+  body.embed .big-state { top: 34px !important; }
+  body.embed .big-state {
+    font-size: 0; gap: 0; padding: 0;
+    width: 11px; height: 11px; border-radius: 50%;
+    top: 5px; left: auto; right: 5px; transform: none;
+  }
+}

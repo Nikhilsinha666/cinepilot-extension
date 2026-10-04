@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blocked - CinePilot</title>
+  <link rel="stylesheet" href="blocked.css" />
+</head>
+<body>
+  <main class="wrap">
+    <div class="mark" aria-hidden="true">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M6.2 6.2l11.6 11.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <h1 id="title">Hyper Focus is on</h1>
+    <p class="lead" id="lead">You chose one video. This page is not it.</p>
+
+    <p class="target" id="target"></p>
+
+    <div class="actions">
+      <button id="backBtn" class="btn primary">Back to my video</button>
+      <button id="offBtn" class="btn">Turn off Hyper Focus</button>
+    </div>
+
+    <p class="hint" id="hint"></p>
+  </main>
+  <script src="blocked.js"></script>
+</body>
+</html>

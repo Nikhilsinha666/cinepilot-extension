@@ -1,0 +1,346 @@
+/* CinePilot - styles injected into YouTube pages.
+   Everything is scoped under our own ids so nothing can leak into the page. */
+
+/* ---------------------------------------------- floating camera preview ---
+   Defaults to roughly a passport photo (35x45mm of camera area) and is freely
+   resizable by the grip in the bottom-right corner. JS drives --cp-w/--cp-body-h
+   so the minimize class can still collapse it without fighting inline styles. */
+#cinepilot-pip.cp-pip {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  width: var(--cp-w, 150px);
+  z-index: 2147483647;
+  background: #15171e;
+  border: 1px solid #2a2e38;
+  border-radius: 10px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+  user-select: none;
+}
+
+#cinepilot-pip .cp-pip-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px 5px 4px 9px;
+  background: #1d2029;
+  cursor: move;
+}
+
+#cinepilot-pip .cp-pip-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e8eaed;
+  letter-spacing: .2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#cinepilot-pip .cp-pip-actions {
+  display: flex;
+  gap: 3px;
+  flex: none;
+}
+
+#cinepilot-pip .cp-pip-btn {
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  border: none;
+  border-radius: 5px;
+  background: #2a2e38;
+  color: #e8eaed;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#cinepilot-pip .cp-pip-btn:hover { background: #3a3f4b; }
+
+/* Too narrow for a label: drop it and keep the buttons reachable. */
+#cinepilot-pip.cp-narrow .cp-pip-title { display: none; }
+#cinepilot-pip.cp-narrow .cp-pip-bar { padding: 3px 4px; justify-content: flex-end; }
+#cinepilot-pip.cp-narrow .cp-pip-btn { width: 17px; height: 17px; font-size: 11px; }
+
+#cinepilot-pip .cp-pip-body {
+  position: relative;
+  width: 100%;
+  height: var(--cp-body-h, 193px);
+  background: #000;
+}
+#cinepilot-pip .cp-pip-body iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  background: #000;
+}
+
+/* minimized: title bar only */
+#cinepilot-pip.cp-min .cp-pip-body { height: 0; }
+#cinepilot-pip.cp-min .cp-pip-resize { display: none; }
+
+/* resize grip */
+#cinepilot-pip .cp-pip-resize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  height: 16px;
+  z-index: 2;
+  cursor: nwse-resize;
+  background:
+    linear-gradient(135deg, transparent 0 46%, rgba(255,255,255,.55) 46% 54%, transparent 54% 100%),
+    linear-gradient(135deg, transparent 0 70%, rgba(255,255,255,.55) 70% 78%, transparent 78% 100%);
+  border-bottom-right-radius: 10px;
+}
+
+/* While dragging or resizing, the iframe must not swallow the mouse events. */
+#cinepilot-pip.cp-dragging .cp-pip-body iframe { pointer-events: none; }
+
+/* ------------------------------------------------------- status pill ------ */
+/* Re-parented into the fullscreen element while fullscreen is active, so it
+   stays visible over the video. */
+#cinepilot-indicator.cp-ind {
+  position: fixed;
+  top: 72px;
+  right: 20px;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px 6px 10px;
+  border-radius: 999px;
+  background: rgba(16, 17, 22, .82);
+  border: 1px solid rgba(255, 255, 255, .10);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .45);
+  font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #e8eaed;
+  pointer-events: none;
+  user-select: none;
+  backdrop-filter: blur(6px);
+  transition: opacity .2s ease;
+}
+
+#cinepilot-indicator .cp-ind-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #8a8f98;
+  flex: none;
+  transition: background .2s ease, box-shadow .2s ease;
+}
+
+/* Stated explicitly so YouTube's own span styling cannot leak in. */
+#cinepilot-indicator .cp-ind-text {
+  font: inherit;
+  font-size: 12px;
+  line-height: 1;
+  color: inherit;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+#cinepilot-indicator.cp-ok {
+  opacity: .72;
+}
+#cinepilot-indicator.cp-ok .cp-ind-dot {
+  background: #45c463;
+  box-shadow: 0 0 0 4px rgba(69, 196, 99, .18);
+}
+
+#cinepilot-indicator.cp-away {
+  opacity: 1;
+  border-color: rgba(255, 77, 77, .45);
+}
+#cinepilot-indicator.cp-away .cp-ind-dot {
+  background: #ff4d4d;
+  box-shadow: 0 0 0 4px rgba(255, 77, 77, .20);
+}
+
+/* ------------------------------------------------------------- toast ------ */
+/* Transient announcement, currently used by Cursor Idle Pause. Re-parented into
+   the fullscreen element like the status pill, for the same reason. */
+#cinepilot-toast.cp-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  z-index: 2147483647;
+  padding: 10px 22px;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, .82);
+  border: 1px solid rgba(255, 255, 255, .08);
+  color: #fff;
+  font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  transition: opacity .25s ease, transform .25s ease;
+}
+
+#cinepilot-toast.cp-show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ------------------------------------- Hyper Focus player button ---------- */
+/* Lives inside .ytp-right-controls, just before the captions button, so it is
+   part of the player's own control row. Inheriting .ytp-button gives it YouTube's
+   sizing and hover behaviour; everything here is only what that does not cover.
+   Being inside the player chrome also means the Hyper Focus page-stripping rules
+   can never hide the control that ends Hyper Focus. */
+#cinepilot-hf-btn.cp-hfbtn {
+  position: relative;
+  width: auto;
+  min-width: 40px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  vertical-align: top;
+}
+
+#cinepilot-hf-btn .cp-hfbtn-in {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 100%;
+}
+
+#cinepilot-hf-btn .cp-hfbtn-svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  opacity: .92;
+  transition: color .15s ease, opacity .15s ease;
+}
+#cinepilot-hf-btn:hover .cp-hfbtn-svg { opacity: 1; }
+
+#cinepilot-hf-btn .cp-hfbtn-txt {
+  font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+#cinepilot-hf-btn .cp-hfbtn-txt:empty { display: none; }
+
+/* Armed: the same red the rest of the extension uses, with a soft glow so it
+   reads as active even against a bright frame. */
+#cinepilot-hf-btn.cp-on { color: #ff4d5f; }
+#cinepilot-hf-btn.cp-on .cp-hfbtn-svg { filter: drop-shadow(0 0 4px rgba(255, 45, 70, .55)); }
+#cinepilot-hf-btn.cp-on .cp-hfbtn-pupil { animation: cp-hf-pulse 2s ease-in-out infinite; }
+
+/* Locked: no pointer affordance, because the click will refuse. It still responds
+   with an explanation rather than doing nothing silently. */
+#cinepilot-hf-btn.cp-locked { cursor: not-allowed; }
+
+@keyframes cp-hf-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cinepilot-hf-btn.cp-on .cp-hfbtn-pupil { animation: none; }
+}
+
+/* ------------------------------------------------------- Hyper Focus ------ */
+/* Applied to <html> only on the tab Hyper Focus was armed on. The goal is that
+   nothing except the video and our own bar survives, so there is no next thing
+   to click and no feed to fall into. */
+html.cp-hyperfocus ytd-masthead,
+html.cp-hyperfocus #masthead-container,
+html.cp-hyperfocus tp-yt-app-drawer,
+html.cp-hyperfocus #guide,
+html.cp-hyperfocus ytd-mini-guide-renderer,
+html.cp-hyperfocus #secondary,
+html.cp-hyperfocus #secondary-inner,
+html.cp-hyperfocus #related,
+html.cp-hyperfocus #below,
+html.cp-hyperfocus #comments,
+html.cp-hyperfocus ytd-comments,
+html.cp-hyperfocus #chat,
+html.cp-hyperfocus #chat-container,
+html.cp-hyperfocus #panels,
+html.cp-hyperfocus ytd-merch-shelf-renderer,
+html.cp-hyperfocus ytd-companion-slot-renderer,
+html.cp-hyperfocus ytd-reel-shelf-renderer,
+html.cp-hyperfocus ytd-rich-shelf-renderer,
+html.cp-hyperfocus ytd-popup-container tp-yt-iron-dropdown,
+html.cp-hyperfocus ytd-playlist-panel-renderer,
+html.cp-hyperfocus #donation-shelf,
+html.cp-hyperfocus #ticker,
+html.cp-hyperfocus ytd-engagement-panel-section-list-renderer {
+  display: none !important;
+}
+
+/* In-player escape hatches: end screen, cards, and the next-video control. */
+html.cp-hyperfocus .ytp-endscreen-content,
+html.cp-hyperfocus .ytp-ce-element,
+html.cp-hyperfocus .ytp-suggested-action,
+html.cp-hyperfocus .ytp-pause-overlay,
+html.cp-hyperfocus .ytp-videowall-still,
+html.cp-hyperfocus .ytp-next-button,
+html.cp-hyperfocus .ytp-prev-button,
+html.cp-hyperfocus .ytp-autonav-toggle-button-container,
+html.cp-hyperfocus .ytp-watch-later-button,
+html.cp-hyperfocus .ytp-share-button,
+html.cp-hyperfocus .ytp-overflow-button {
+  display: none !important;
+}
+
+/* Reclaim the whole width for the video and pull it up under the top of the
+   window, since the masthead is gone. */
+html.cp-hyperfocus #page-manager.ytd-app { margin-top: 0 !important; }
+html.cp-hyperfocus #primary.ytd-watch-flexy,
+html.cp-hyperfocus #primary-inner.ytd-watch-flexy {
+  max-width: none !important;
+  width: 100% !important;
+  padding-right: 0 !important;
+}
+html.cp-hyperfocus ytd-watch-flexy[flexy] #columns { max-width: none !important; }
+html.cp-hyperfocus, html.cp-hyperfocus body { background: #000 !important; }
+
+/* Whatever else is hidden, the control that ends the mode stays. */
+html.cp-hyperfocus #cinepilot-hf-btn.cp-hfbtn { display: inline-block !important; }
+
+/* A quiet permanent marker, so it is never a mystery why the page looks bare. */
+html.cp-hyperfocus body::after {
+  content: "Hyper Focus";
+  position: fixed;
+  left: 14px;
+  bottom: 14px;
+  z-index: 2147483646;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(255, 45, 70, .14);
+  border: 1px solid rgba(255, 45, 70, .45);
+  color: #ff8a99;
+  font-family: "Roboto", "Segoe UI", system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  pointer-events: none;
+}
+
+/* Commitment lock engaged: dimmed so it does not read as a live off switch, but
+   still clickable so it can explain why it will not budge. */
+#cinepilot-hf-btn.cp-locked .cp-hfbtn-svg { opacity: .7; }
+#cinepilot-hf-btn.cp-locked .cp-hfbtn-txt { color: #ff8a99; }

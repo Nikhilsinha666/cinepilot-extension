@@ -1,0 +1,81 @@
+{
+  "manifest_version": 3,
+  "name": "CinePilot for YouTube",
+  "version": "3.1.0",
+  "description": "Auto-fullscreen on play, auto-pause when you look away or touch the mouse, and a Hyper Focus mode that blocks everything except the video you chose.",
+  "minimum_chrome_version": "116",
+  "permissions": ["offscreen", "storage", "tabs", "scripting"],
+  "host_permissions": ["*://*.youtube.com/*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CinePilot for YouTube",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "commands": {
+    "toggle-master": {
+      "suggested_key": { "default": "Alt+Shift+Y" },
+      "description": "CinePilot: turn everything on / off"
+    },
+    "toggle-face-pause": {
+      "suggested_key": { "default": "Alt+Shift+P" },
+      "description": "Toggle Face Pause (look-away pausing)"
+    },
+    "toggle-auto-fullscreen": {
+      "suggested_key": { "default": "Alt+Shift+F" },
+      "description": "Toggle Auto Fullscreen"
+    },
+    "calibrate": {
+      "suggested_key": { "default": "Alt+Shift+C" },
+      "description": "Calibrate your neutral head pose"
+    },
+    "toggle-cursor-pause": {
+      "description": "Toggle Cursor Pause (assign a key in chrome://extensions/shortcuts)"
+    },
+    "toggle-hyper-focus": {
+      "description": "Toggle Hyper Focus (assign a key in chrome://extensions/shortcuts)"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "preview.html",
+        "preview.js",
+        "preview.css",
+        "detector-core.js",
+        "vendor/*",
+        "models/*"
+      ],
+      "matches": ["*://*.youtube.com/*"]
+    }
+  ]
+}

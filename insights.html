@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CinePilot - Focus insights</title>
+  <link rel="stylesheet" href="insights.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="hdr">
+      <div>
+        <h1>Focus insights</h1>
+        <p class="sub">Built from the same on-device signal that pauses your video. Nothing here has ever left this machine.</p>
+      </div>
+      <span class="badge" id="recording">Recording locally</span>
+    </header>
+
+    <section class="card hero">
+      <div class="ring" id="ring">
+        <div class="ring-in">
+          <strong id="pctVal">--</strong>
+          <span>focused</span>
+        </div>
+      </div>
+      <div class="hero-side">
+        <p class="pctsub" id="pctSub"></p>
+        <div class="kpis">
+          <div class="kpi"><span class="kv" id="watched">0m</span><span class="kl">watched today</span></div>
+          <div class="kpi"><span class="kv" id="focused">0m</span><span class="kl">eyes on screen</span></div>
+          <div class="kpi"><span class="kv" id="hyper">0m</span><span class="kl">in Hyper Focus</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>What broke your focus</h2>
+        <span class="tot" id="interruptTotal"></span>
+      </div>
+      <div id="breakdown"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Last 7 days</h2>
+        <span class="legend"><i class="sw-watch"></i> watched <i class="sw-focus"></i> focused</span>
+      </div>
+      <div class="week" id="week"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>All time</h2></div>
+      <div class="kpis">
+        <div class="kpi"><span class="kv" id="allWatched">0m</span><span class="kl">watched</span></div>
+        <div class="kpi"><span class="kv" id="allFocused">0m</span><span class="kl">focused</span></div>
+        <div class="kpi"><span class="kv" id="allPct">--</span><span class="kl">focus rate</span></div>
+      </div>
+      <p class="note" id="allDays"></p>
+    </section>
+
+    <section class="card">
+      <div class="card-head"><h2>What is and is not measured</h2></div>
+      <p class="note">
+        Focus is reported as a share of <strong>measured</strong> time, not of watch
+        time. Attention is only knowable while Face Pause is on and a YouTube
+        window is in front, because that is when the camera is running. Time
+        watched with the camera off still counts as watched, but is deliberately
+        excluded from the percentage rather than guessed at.
+      </p>
+      <p class="note">
+        Only these counters are stored: milliseconds watched, measured, focused and
+        away, time in Hyper Focus, and how many times each feature paused you.
+        <strong>No video frames, images, face data, titles or URLs are recorded.</strong>
+      </p>
+      <div class="bar">
+        <button id="clearBtn" class="btn danger">Delete all history</button>
+      </div>
+    </section>
+  </main>
+  <script src="insights.js"></script>
+</body>
+</html>

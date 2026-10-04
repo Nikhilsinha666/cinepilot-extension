@@ -1,0 +1,15 @@
+{
+  "name": "cinepilot-packager",
+  "version": "1.0.0",
+  "description": "Reusable Kiro Power for CinePilot for YouTube bundling skills and DevTools inspection.",
+  "schemaVersion": "1.0",
+  "skills": [
+    {
+      "name": "offscreen-video-auditor",
+      "path": "skills/offscreen-video-auditor.md"
+    }
+  ],
+  "mcpServers": [
+    "devtools-inspector"
+  ]
+}

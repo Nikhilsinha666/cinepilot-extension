@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CinePilot — detector</title>
+</head>
+<body>
+  <!-- Hidden video used only for inference; never displayed to the user.
+       MediaPipe reads the frames straight off this element, so no canvas is needed. -->
+  <video id="cam" autoplay playsinline muted style="display:none"></video>
+  <script type="module" src="offscreen.js"></script>
+</body>
+</html>

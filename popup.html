@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CinePilot</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="hdr">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <rect x="2.5" y="4.5" width="19" height="15" rx="3.5" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M10 9.2l4.6 2.8L10 14.8V9.2z" fill="currentColor"/>
+        </svg>
+      </span>
+      <span class="title">CinePilot<small>for YouTube</small></span>
+    </div>
+    <label class="switch" title="Turn CinePilot on or off">
+      <input type="checkbox" id="masterEnabled" />
+      <span class="slider"></span>
+    </label>
+  </header>
+
+  <section class="card status">
+    <div class="status-row">
+      <span class="state-dot" id="stateDot"></span>
+      <span class="state-text" id="stateText">Loading…</span>
+    </div>
+    <p class="source" id="sourceText"></p>
+    <div class="metrics" id="metrics">
+      <div class="metric"><span class="m-label">Turn (L/R)</span><div class="bar"><i id="yawBar"></i></div></div>
+      <div class="metric"><span class="m-label">Tilt (U/D)</span><div class="bar"><i id="pitchBar"></i></div></div>
+    </div>
+  </section>
+
+  <div id="permBanner" class="banner hidden">
+    <p id="permMsg">Camera access is needed to detect your face.</p>
+    <button id="grantBtn" class="btn primary">Grant camera access</button>
+  </div>
+
+  <!-- ------------------------------- Auto Fullscreen ------------------------ -->
+  <section class="card" id="afCard">
+    <div class="card-head">
+      <div class="card-title">
+        <span class="ico" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Auto Fullscreen
+      </div>
+      <label class="switch sm"><input type="checkbox" id="afEnabled" /><span class="slider"></span></label>
+    </div>
+    <p class="hint">Clicks YouTube's fullscreen button the moment playback starts.</p>
+
+    <div class="sub" id="afSub">
+      <div class="setting inline">
+        <label for="afPauseOnExit">Pause when leaving fullscreen</label>
+        <label class="switch sm"><input type="checkbox" id="afPauseOnExit" /><span class="slider"></span></label>
+      </div>
+      <div class="setting inline">
+        <label for="afRefocus">Re-enter when tab regains focus</label>
+        <label class="switch sm"><input type="checkbox" id="afRefocus" /><span class="slider"></span></label>
+      </div>
+      <div class="setting">
+        <div class="row-between">
+          <label for="afDelayMs">Trigger delay</label>
+          <span class="val" id="afDelayVal">0.5s</span>
+        </div>
+        <input type="range" id="afDelayMs" min="0" max="1500" step="100" />
+        <p class="hint">Longer delays are more reliable on slow pages.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ---------------------------------- Face Pause -------------------------- -->
+  <section class="card" id="fpCard">
+    <div class="card-head">
+      <div class="card-title">
+        <span class="ico" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="9" r="4" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M4.8 20c0-3.2 3.2-5.2 7.2-5.2s7.2 2 7.2 5.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Face Pause
+      </div>
+      <label class="switch sm"><input type="checkbox" id="fpEnabled" /><span class="slider"></span></label>
+    </div>
+    <p class="hint">Pauses when you look away, resumes when you look back. Runs entirely on your device.</p>
+
+    <div class="sub" id="fpSub">
+      <div class="setting">
+        <label>Detection mode</label>
+        <div class="mode-toggle">
+          <button class="mode-opt" id="optHead" data-mode="head">Head pose</button>
+          <button class="mode-opt" id="optEyes" data-mode="eyes">Eye gaze</button>
+        </div>
+        <p class="hint" id="modeHint"></p>
+      </div>
+
+      <div class="setting">
+        <label for="fpSensitivity">Sensitivity</label>
+        <input type="range" id="fpSensitivity" min="1" max="5" step="1" />
+        <div class="range-legend"><span>Lenient</span><span>Strict</span></div>
+        <p class="hint" id="sensHint"></p>
+      </div>
+
+      <div class="setting">
+        <div class="row-between">
+          <label for="fpRewindSec">Rewind on resume</label>
+          <span class="val" id="fpRewindVal">2.0s</span>
+        </div>
+        <input type="range" id="fpRewindSec" min="0" max="10" step="0.5" />
+        <div class="range-legend"><span>Off</span><span>10s</span></div>
+        <p class="hint" id="rewindHint"></p>
+      </div>
+
+      <div class="setting inline">
+        <label for="fpFocusOnly">Camera only while YouTube is in front</label>
+        <label class="switch sm"><input type="checkbox" id="fpFocusOnly" /><span class="slider"></span></label>
+      </div>
+      <p class="hint">Releases the camera when you switch tabs, switch windows, or leave Chrome. The recording light goes out; the model stays loaded so coming back is instant.</p>
+
+      <div class="setting inline">
+        <label for="fpShowPip">Camera preview on the page</label>
+        <label class="switch sm"><input type="checkbox" id="fpShowPip" /><span class="slider"></span></label>
+      </div>
+      <div class="setting inline">
+        <label for="fpShowIndicator">Status pill on the video</label>
+        <label class="switch sm"><input type="checkbox" id="fpShowIndicator" /><span class="slider"></span></label>
+      </div>
+
+      <div class="actions">
+        <button id="calibrateBtn" class="btn">Calibrate neutral pose</button>
+        <button id="windowBtn" class="btn ghost">Open camera window</button>
+      </div>
+      <p class="hint">Calibrate while looking straight at the screen so turns are measured from where you actually sit.</p>
+    </div>
+  </section>
+
+  <!-- -------------------------------- Cursor Pause -------------------------- -->
+  <section class="card" id="curCard">
+    <div class="card-head">
+      <div class="card-title">
+        <span class="ico" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M5.5 3.2l13 7.6-5.8 1.5-2.7 5.3-4.5-14.4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Cursor Pause
+      </div>
+      <label class="switch sm"><input type="checkbox" id="curEnabled" /><span class="slider"></span></label>
+    </div>
+    <p class="hint">Touch the mouse and the video pauses, because reaching for the mouse is the moment you got distracted. You restart it yourself.</p>
+
+    <div class="sub" id="curSub">
+      <div class="setting">
+        <div class="row-between">
+          <label for="curSensitivityPx">How much movement counts</label>
+          <span class="val" id="curSensVal">60px</span>
+        </div>
+        <input type="range" id="curSensitivityPx" min="5" max="400" step="5" />
+        <div class="range-legend"><span>Hair trigger</span><span>Big sweep</span></div>
+        <p class="hint" id="curSensHint"></p>
+      </div>
+
+      <div class="setting">
+        <div class="row-between">
+          <label for="curGraceMs">Ignore the mouse after play</label>
+          <span class="val" id="curGraceVal">1.5s</span>
+        </div>
+        <input type="range" id="curGraceMs" min="0" max="6000" step="100" />
+        <p class="hint">You press play with the mouse, so it has to ignore you briefly or the video could never start.</p>
+      </div>
+
+      <div class="setting inline">
+        <label for="curOnClick">Clicks and scrolling pause instantly</label>
+        <label class="switch sm"><input type="checkbox" id="curOnClick" /><span class="slider"></span></label>
+      </div>
+      <div class="setting inline">
+        <label for="curAutoResume">Resume when the mouse goes still</label>
+        <label class="switch sm"><input type="checkbox" id="curAutoResume" /><span class="slider"></span></label>
+      </div>
+      <div class="setting" id="resumeRow">
+        <div class="row-between">
+          <label for="curResumeAfterMs">Still for</label>
+          <span class="val" id="curResumeVal">2.0s</span>
+        </div>
+        <input type="range" id="curResumeAfterMs" min="250" max="15000" step="250" />
+        <p class="hint">Only ever resumes a pause Cursor Pause caused. A video you stopped yourself, or one Face Pause stopped, is left alone.</p>
+      </div>
+
+      <div class="setting inline">
+        <label for="curToast">Announce the pause on the page</label>
+        <label class="switch sm"><input type="checkbox" id="curToast" /><span class="slider"></span></label>
+      </div>
+    </div>
+  </section>
+
+  <!-- --------------------------------- Hyper Focus -------------------------- -->
+  <section class="card" id="hfCard">
+    <div class="card-head">
+      <div class="card-title">
+        <span class="ico" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="8.2" stroke="currentColor" stroke-width="1.7"/>
+            <circle cx="12" cy="12" r="2.6" fill="currentColor"/>
+          </svg>
+        </span>
+        Hyper Focus
+      </div>
+      <label class="switch sm"><input type="checkbox" id="hfEnabled" /><span class="slider"></span></label>
+    </div>
+    <p class="hint">Locks you to the video you are on. Every other site, page and video is blocked until you switch it off.</p>
+
+    <div class="sub" id="hfSub">
+      <div class="setting">
+        <div class="row-between">
+          <label for="hfMinutes">Session length</label>
+          <span class="val" id="hfMinsVal">No limit</span>
+        </div>
+        <input type="range" id="hfMinutes" min="0" max="180" step="5" />
+        <div class="range-legend"><span>No limit</span><span>3h</span></div>
+      </div>
+
+      <div class="setting">
+        <div class="row-between">
+          <label for="hfLockPercent">Lock until watched</label>
+          <span class="val" id="hfLockVal">Off</span>
+        </div>
+        <input type="range" id="hfLockPercent" min="0" max="100" step="5" />
+        <div class="range-legend"><span>Off</span><span>100%</span></div>
+        <p class="hint" id="hfLockHint"></p>
+      </div>
+
+      <div class="setting inline">
+        <label for="hfHideDistractions">Hide everything but the player</label>
+        <label class="switch sm"><input type="checkbox" id="hfHideDistractions" /><span class="slider"></span></label>
+      </div>
+      <div class="setting inline">
+        <label for="hfShowBar">Button in the player controls</label>
+        <label class="switch sm"><input type="checkbox" id="hfShowBar" /><span class="slider"></span></label>
+      </div>
+
+      <div class="actions">
+        <button id="listsBtn" class="btn ghost">Edit allowlist and blocklist</button>
+      </div>
+      <p class="hint" id="hfHint"></p>
+    </div>
+  </section>
+
+  <!-- ---------------------------------- Insights ---------------------------- -->
+  <section class="card" id="statsCard">
+    <div class="card-head">
+      <div class="card-title">
+        <span class="ico" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+            <path d="M4 20V10M10 20V5M16 20v-7M22 20H2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Focus insights
+      </div>
+      <label class="switch sm"><input type="checkbox" id="statsEnabled" /><span class="slider"></span></label>
+    </div>
+    <p class="hint" id="statsToday">No focus recorded yet today.</p>
+    <div class="actions">
+      <button id="insightsBtn" class="btn ghost">Open focus report</button>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <span id="footHint">Open a YouTube video to see it work.</span>
+    <a href="#" id="shortcutsLink">Shortcuts</a>
+  </footer>
+
+  <!-- Confirmation for commitments you cannot easily undo later -->
+  <div class="modal hidden" id="confirmWrap">
+    <div class="modal-card">
+      <h3 id="confirmTitle">Are you sure?</h3>
+      <p id="confirmBody"></p>
+      <div class="modal-actions">
+        <button id="confirmNo" class="btn">Cancel</button>
+        <button id="confirmYes" class="btn primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

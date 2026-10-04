@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CinePilot — Camera Access</title>
+  <link rel="stylesheet" href="permission.css" />
+</head>
+<body>
+  <main class="wrap">
+    <div class="icon" aria-hidden="true">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="9" r="4.2" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M4.5 20c0-3.3 3.4-5.5 7.5-5.5s7.5 2.2 7.5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h1>Allow camera access</h1>
+    <p class="lead">
+      CinePilot's <strong>Face Pause</strong> needs your webcam to tell when
+      you're looking at the screen. Everything is processed
+      <strong>on your device</strong> — no video, images, or face data ever leave
+      your computer or get saved.
+    </p>
+    <p class="lead sub">
+      Granting it here lets the detector run quietly in the background, so it
+      keeps working in fullscreen and never interrupts a video to ask.
+      <strong>Auto Fullscreen works without the camera</strong>, so you can skip
+      this and still use that half of the extension.
+    </p>
+
+    <video id="preview" autoplay playsinline muted></video>
+
+    <div class="actions">
+      <button id="askBtn" class="btn primary">Enable camera</button>
+    </div>
+
+    <p id="msg" class="msg"></p>
+
+    <details class="help">
+      <summary>Camera blocked? How to fix</summary>
+      <ol>
+        <li>Click the camera / lock icon in the address bar of this page.</li>
+        <li>Set <em>Camera</em> to <strong>Allow</strong>.</li>
+        <li>Click <strong>Enable camera</strong> again.</li>
+      </ol>
+    </details>
+  </main>
+  <script src="permission.js"></script>
+</body>
+</html>
